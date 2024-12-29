@@ -28,8 +28,13 @@
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2024-12-28 21:46:10.435732",
+ "links": [
+  {
+   "link_doctype": "Stock Entry Item",
+   "link_fieldname": "item"
+  }
+ ],
+ "modified": "2024-12-29 16:44:20.229767",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Item",
