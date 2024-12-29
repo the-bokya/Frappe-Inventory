@@ -86,7 +86,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "inventory.install.before_install"
-# after_install = "inventory.install.after_install"
+after_install = "inventory.setup.install.after_install"
 
 # Uninstallation
 # ------------
