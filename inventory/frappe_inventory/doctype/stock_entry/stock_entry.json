@@ -1,14 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:item_name",
+ "autoname": "hash",
  "creation": "2024-12-29 16:01:23.736401",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "section_break_gc19",
   "amended_from",
-  "item_name",
+  "transaction_type",
   "transactions"
  ],
  "fields": [
@@ -27,28 +27,28 @@
    "search_index": 1
   },
   {
-   "fieldname": "item_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Item Name",
-   "reqd": 1,
-   "unique": 1
-  },
-  {
    "fieldname": "transactions",
    "fieldtype": "Table",
    "label": "Transactions",
    "options": "Stock Entry Item"
+  },
+  {
+   "fieldname": "transaction_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transaction Type",
+   "options": "Receipt\nConsume\nTransfer",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-29 16:34:34.065610",
+ "modified": "2024-12-29 16:48:41.104302",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Stock Entry",
- "naming_rule": "By fieldname",
+ "naming_rule": "Random",
  "owner": "Administrator",
  "permissions": [
   {
