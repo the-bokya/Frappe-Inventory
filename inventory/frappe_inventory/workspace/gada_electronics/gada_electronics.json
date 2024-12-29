@@ -1,7 +1,7 @@
 {
  "app": "frappe",
  "charts": [],
- "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}}]",
+ "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}},{\"id\":\"xZN1wgunqi\",\"type\":\"card\",\"data\":{\"card_name\":\"Entries\",\"col\":4}}]",
  "creation": "2024-12-29 15:56:48.608163",
  "custom_blocks": [],
  "docstatus": 0,
@@ -14,8 +14,38 @@
  "is_hidden": 0,
  "label": "Gada Electronics",
  "link_type": "DocType",
- "links": [],
- "modified": "2024-12-29 15:58:41.293434",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Entries",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Entry",
+   "link_count": 0,
+   "link_to": "Stock Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2024-12-29 22:59:10.122901",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Gada Electronics",
