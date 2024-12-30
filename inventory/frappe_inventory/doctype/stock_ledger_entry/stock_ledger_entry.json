@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2024-12-29 23:39:36.483969",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_93wx",
+  "amended_from",
+  "item",
+  "warehouse",
+  "transaction_datetime",
+  "transaction_section",
+  "valuation_rate",
+  "quantity_change",
+  "final_quantity",
+  "incoming_rate",
+  "outgoing_rate"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_93wx",
+   "fieldtype": "Section Break",
+   "label": "Metadate"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Ledger Entry",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "transaction_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Transaction Datetime",
+   "reqd": 1
+  },
+  {
+   "fieldname": "transaction_section",
+   "fieldtype": "Section Break",
+   "label": "Transaction"
+  },
+  {
+   "fieldname": "valuation_rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Valuation Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "quantity_change",
+   "fieldtype": "Int",
+   "label": "Quantity Change",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "final_quantity",
+   "fieldtype": "Int",
+   "label": "Final Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "incoming_rate",
+   "fieldtype": "Currency",
+   "label": "Incoming Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "outgoing_rate",
+   "fieldtype": "Currency",
+   "label": "Outgoing Rate",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-12-30 11:51:54.149002",
+ "modified_by": "Administrator",
+ "module": "Frappe Inventory",
+ "name": "Stock Ledger Entry",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "All",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
