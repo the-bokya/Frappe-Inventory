@@ -13,7 +13,7 @@ class StockEntry(Document):
 		ledger_entries = self.generate_ledgers()
 
 		# Common datetime entry for all ledgers
-		current_time = datetime.now()
+		current_time = self.stock_datetime
 
 		for ledger_entry in ledger_entries:
 			ledger_entry.transaction_datetime = current_time

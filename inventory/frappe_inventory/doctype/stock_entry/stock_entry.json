@@ -9,6 +9,7 @@
   "section_break_gc19",
   "amended_from",
   "transaction_type",
+  "stock_datetime",
   "transactions",
   "fetch_valuation"
  ],
@@ -45,12 +46,18 @@
    "fieldname": "fetch_valuation",
    "fieldtype": "Button",
    "label": "Fetch Valuation"
+  },
+  {
+   "fieldname": "stock_datetime",
+   "fieldtype": "Datetime",
+   "label": "Stock Datetime",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-12-30 16:49:24.563342",
+ "modified": "2024-12-31 15:49:04.737545",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Stock Entry",
