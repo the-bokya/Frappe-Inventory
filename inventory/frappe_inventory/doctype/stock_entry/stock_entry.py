@@ -23,13 +23,6 @@ class StockEntry(Document):
 	def submit_receipt(self):
 		ledgers = []
 
-	@frappe.whitelist
-	def fetch_valuation(self):
-		for transaction in self.transactions:
-			_, valuation = get_last_stock_and_valuation(
-				transaction.item, transaction.source_warehouse
-			)
-			transaction.valuation_rate = valuation
 
 	def update_ledger_quantity(self, ledger, stock):
 		ledger.final_quantity = stock + ledger.quantity_change
