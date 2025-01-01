@@ -54,3 +54,13 @@ def get_last_stock_and_valuation(item, warehouse):
 		stock, stock_balance, valuation_rate = 0, 0, 0
 	print(stock, stock_balance, valuation_rate)
 	return stock, stock_balance, valuation_rate
+
+
+# A bunch of helper functions to generate various DocTypes
+# Mostly for testing
+
+def generate_item(item_name, item_type):
+		item = frappe.get_doc({"doctype": "Item"})
+		item.name1 = item_name
+		item.type = item_type
+		return item
