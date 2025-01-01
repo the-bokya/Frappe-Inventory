@@ -133,4 +133,3 @@ class TestStockEntryAndLedgerEntryFlow(IntegrationTestCase):
 		self.assertEqual(wh2_test_stock, wh2_actual_stock)
 		self.assertAlmostEqual(wh2_test_stock_balance, wh2_actual_stock_balance)
 		self.assertAlmostEqual(wh2_test_valuation_rate, wh2_actual_valuation_rate)
-		frappe.db.commit()
