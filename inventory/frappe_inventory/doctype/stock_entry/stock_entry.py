@@ -9,7 +9,6 @@ from datetime import datetime
 
 class StockEntry(Document):
 	def on_submit(self):
-		self.fetch_valuation()
 		ledgers = self.generate_ledgers()
 
 		# Common datetime entry for all ledgers
@@ -18,11 +17,11 @@ class StockEntry(Document):
 		for ledger in ledgers:
 			ledger.transaction_datetime = current_time
 			ledger.valuation_rate = ledger.stock_balance / ledger.final_quantity
+			ledger.parent_stock_entry = self.name
 			ledger.submit()
 
 	def submit_receipt(self):
 		ledgers = []
-
 
 	def update_ledger_quantity(self, ledger, stock):
 		ledger.final_quantity = stock + ledger.quantity_change
@@ -55,11 +54,14 @@ class StockEntry(Document):
 	def generate_ledgers(self):
 		ledgers = []
 		for transaction in self.transactions:
-			source_stock, source_stock_balance, source_moving_average_valuation_rate = (
-				get_last_stock_and_valuation(
-					transaction.item, transaction.source_warehouse
-				)
+			(
+				source_stock,
+				source_stock_balance,
+				source_moving_average_valuation_rate,
+			) = get_last_stock_and_valuation(
+				transaction.item, transaction.source_warehouse
 			)
+
 			(
 				destination_stock,
 				destination_stock_balance,
@@ -80,7 +82,6 @@ class StockEntry(Document):
 					)
 					frappe.db.rollback()
 
-				source_valuation_rate = source_moving_average_valuation_rate
 				transaction.valuation_rate = valuation_rate
 				sent_ledger = frappe.get_doc({"doctype": "Stock Ledger Entry"})
 				sent_ledger.item = transaction.item
