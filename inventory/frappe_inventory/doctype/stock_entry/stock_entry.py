@@ -16,7 +16,10 @@ class StockEntry(Document):
 
 		for ledger in ledgers:
 			ledger.transaction_datetime = current_time
-			ledger.valuation_rate = ledger.stock_balance / ledger.final_quantity
+			try:
+				ledger.valuation_rate = ledger.stock_balance / ledger.final_quantity
+			except ZeroDivisionError:
+				ledger.valuation_rate = 0
 			ledger.parent_stock_entry = self.name
 			ledger.submit()
 
