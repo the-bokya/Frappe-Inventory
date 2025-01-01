@@ -10,17 +10,18 @@ from datetime import datetime
 class StockEntry(Document):
 	def on_submit(self):
 		self.fetch_valuation()
-		ledger_entries = self.generate_ledgers()
+		ledgers = self.generate_ledgers()
 
 		# Common datetime entry for all ledgers
 		current_time = self.stock_datetime
 
-		for ledger_entry in ledger_entries:
-			ledger_entry.transaction_datetime = current_time
-			ledger_entry.submit()
+		for ledger in ledgers:
+			ledger.transaction_datetime = current_time
+			ledger.valuation_rate = ledger.stock_balance / ledger.final_quantity
+			ledger.submit()
 
 	def submit_receipt(self):
-		ledger_entries = []
+		ledgers = []
 
 	@frappe.whitelist
 	def fetch_valuation(self):
@@ -30,30 +31,30 @@ class StockEntry(Document):
 			)
 			transaction.valuation_rate = valuation
 
-	def update_ledger_quantity(self, ledger):
-		ledger.final_quantity = ledger.quantity_change
+	def update_ledger_quantity(self, ledger, stock):
+		ledger.final_quantity = stock + ledger.quantity_change
 
-	def update_sent_ledger(self, ledger, transaction, stock, valuation_rate):
+	def update_sent_ledger(
+		self, ledger, transaction, stock, stock_balance, valuation_rate
+	):
 		ledger.warehouse = transaction.source_warehouse
-		ledger.valuation_rate = valuation_rate
 		ledger.quantity_change = -transaction.quantity
+		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
 
-		self.update_ledger_quantity(ledger)
+		self.update_ledger_quantity(ledger, stock)
 
 		ledger.incoming_rate = 0
 		ledger.outgoing_rate = valuation_rate
 
-	def update_received_ledger(self, ledger, transaction, stock, valuation_rate):
+	def update_received_ledger(
+		self, ledger, transaction, stock, stock_balance, valuation_rate
+	):
 		ledger.warehouse = transaction.destination_warehouse
 
-		# Valuation rate may change for the receiving ledger entry
-		new_valuation_rate = (
-			valuation_rate * stock + transaction.valuation_rate * transaction.quantity
-		) / (stock + transaction.quantity)
-		ledger.valuation_rate = new_valuation_rate
 		ledger.quantity_change = transaction.quantity
+		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
 
-		self.update_ledger_quantity(ledger)
+		self.update_ledger_quantity(ledger, stock)
 
 		ledger.incoming_rate = valuation_rate
 		ledger.outgoing_rate = 0
@@ -61,28 +62,53 @@ class StockEntry(Document):
 	def generate_ledgers(self):
 		ledgers = []
 		for transaction in self.transactions:
-			stock, moving_average_valuation_rate = get_last_stock_and_valuation(
-				transaction.item, transaction.source_warehouse
+			source_stock, source_stock_balance, source_moving_average_valuation_rate = (
+				get_last_stock_and_valuation(
+					transaction.item, transaction.source_warehouse
+				)
 			)
-			valuation_rate = transaction.valuation_rate
+			(
+				destination_stock,
+				destination_stock_balance,
+				destination_moving_average_valuation_rate,
+			) = get_last_stock_and_valuation(
+				transaction.item, transaction.destination_warehouse
+			)
+			if self.transaction_type == "Receipt":
+				valuation_rate = transaction.valuation_rate
+			else:
+				valuation_rate = source_moving_average_valuation_rate
 
 			# Hacky way to revert transactions if stock not satisfied
 			if self.transaction_type != "Receipt":
-				if stock < transaction.quantity:
-					frappe.throw(f"Not enough stock for {self.transaction_type} transaction. (for {transaction.item}, {stock} < {transaction.quantity})")
+				if source_stock < transaction.quantity:
+					frappe.throw(
+						f"Not enough stock for {self.transaction_type} transaction. (for {transaction.item}, {source_stock} < {transaction.quantity})"
+					)
 					frappe.db.rollback()
-				valuation_rate = moving_average_valuation_rate
+
+				source_valuation_rate = source_moving_average_valuation_rate
 				transaction.valuation_rate = valuation_rate
 				sent_ledger = frappe.get_doc({"doctype": "Stock Ledger Entry"})
 				sent_ledger.item = transaction.item
-				self.update_sent_ledger(sent_ledger, transaction, stock, valuation_rate)
+				self.update_sent_ledger(
+					sent_ledger,
+					transaction,
+					source_stock,
+					source_stock_balance,
+					valuation_rate,
+				)
 				ledgers.append(sent_ledger)
 
 			if self.transaction_type != "Consume":
 				received_ledger = frappe.get_doc({"doctype": "Stock Ledger Entry"})
 				received_ledger.item = transaction.item
 				self.update_received_ledger(
-					received_ledger, transaction, stock, valuation_rate
+					received_ledger,
+					transaction,
+					destination_stock,
+					destination_stock_balance,
+					valuation_rate,
 				)
 				ledgers.append(received_ledger)
 		return ledgers
