@@ -1,7 +1,7 @@
 {
  "app": "frappe",
  "charts": [],
- "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}},{\"id\":\"xZN1wgunqi\",\"type\":\"card\",\"data\":{\"card_name\":\"Entries\",\"col\":4}}]",
+ "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}},{\"id\":\"xZN1wgunqi\",\"type\":\"card\",\"data\":{\"card_name\":\"Entries\",\"col\":4}},{\"id\":\"JTwoge1I0V\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2024-12-29 15:56:48.608163",
  "custom_blocks": [],
  "docstatus": 0,
@@ -43,9 +43,40 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Ledger Report",
+   "link_count": 0,
+   "link_to": "Stock Ledger",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Stock Ledger Entry",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Balance Report",
+   "link_count": 0,
+   "link_to": "Stock Balance",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "Stock Ledger Entry",
+   "type": "Link"
   }
  ],
- "modified": "2024-12-29 22:59:10.122901",
+ "modified": "2025-01-02 02:47:05.464903",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Gada Electronics",

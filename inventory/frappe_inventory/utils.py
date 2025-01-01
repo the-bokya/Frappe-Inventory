@@ -1,5 +1,5 @@
 import frappe
-from frappe.query_builder.functions import Count, Sum, Abs
+from frappe.query_builder.functions import Count, Sum, Abs, Max
 from datetime import datetime
 
 # Method for moving average valuation
@@ -77,8 +77,42 @@ def get_stock_ledger():
 	)
 	return query.run(as_dict=True)
 
+
+def get_stock_balance():
+	ledger_entries_d = frappe.qb.DocType("Stock Ledger Entry")
+
+	# This one gets the latest ledger entry timestamp for each warehouse-item pair
+	latest_entries_per_group = (
+		frappe.qb.from_(ledger_entries_d)
+		.select(ledger_entries_d.item,
+				ledger_entries_d.warehouse,
+				Max(ledger_entries_d.transaction_datetime).as_("timestamp"),
+				)
+		.groupby(ledger_entries_d.item, ledger_entries_d.warehouse)
+	)
+	print(latest_entries_per_group.run())
+	# This join is able to get only the latest key-value pairs' fields
+	query = (
+		frappe.qb.from_(ledger_entries_d)
+		.join(latest_entries_per_group)
+		.on(
+			(ledger_entries_d.warehouse == latest_entries_per_group.warehouse) &
+			(ledger_entries_d.transaction_datetime == latest_entries_per_group.timestamp) &
+			(ledger_entries_d.item == latest_entries_per_group.item)
+		)
+		.select(
+			ledger_entries_d.final_quantity.as_("Final Quantity"),
+			ledger_entries_d.item.as_("Item"),
+			ledger_entries_d.stock_balance.as_("Stock Balance"),
+			ledger_entries_d.quantity_change.as_("Quantity Change"),
+			ledger_entries_d.valuation_rate.as_("Valuation Rate"),
+			ledger_entries_d.warehouse.as_("Warehouse")
+		)
+	)
+	return query.run(as_dict=True)
 # A bunch of helper functions to generate various DocTypes
 # Mostly for testing
+
 
 def generate_item(item_name, item_type):
 	item = frappe.get_doc({"doctype": "Item"})
