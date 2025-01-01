@@ -31,7 +31,8 @@
    "fieldname": "transactions",
    "fieldtype": "Table",
    "label": "Transactions",
-   "options": "Stock Entry Item"
+   "options": "Stock Entry Item",
+   "reqd": 1
   },
   {
    "fieldname": "transaction_type",
@@ -50,8 +51,13 @@
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2025-01-01 14:50:00.570386",
+ "links": [
+  {
+   "link_doctype": "Stock Ledger Entry",
+   "link_fieldname": "parent_stock_entry"
+  }
+ ],
+ "modified": "2025-01-01 18:49:51.687761",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Stock Entry",
