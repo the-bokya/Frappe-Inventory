@@ -83,7 +83,6 @@ class StockEntry(Document):
 					frappe.throw(
 						f"Not enough stock for {self.transaction_type} transaction. (for {transaction.item}, {source_stock} < {transaction.quantity})"
 					)
-					frappe.db.rollback()
 
 				transaction.valuation_rate = valuation_rate
 				sent_ledger = frappe.get_doc({"doctype": "Stock Ledger Entry"})
