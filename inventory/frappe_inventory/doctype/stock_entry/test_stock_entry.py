@@ -1,8 +1,10 @@
 # Copyright (c) 2024, Ayush Chaudhari and Contributors
 # See license.txt
 
-# import frappe
+import frappe
 from frappe.tests import IntegrationTestCase, UnitTestCase
+from frappe.tests.utils import FrappeTestCase
+from inventory.frappe_inventory.utils import generate_single_transaction, generate_item
 
 
 # On IntegrationTestCase, the doctype test records and all
@@ -28,3 +30,14 @@ class IntegrationTestStockEntry(IntegrationTestCase):
 	"""
 
 	pass
+
+class TestDriver(FrappeTestCase):
+	def setUp(self):
+		generate_item("TV", "Consumable").insert()
+	def test_stock_entry_generation(self):
+		stock_entry = generate_single_transaction("Receipt", 1, "TV", valuation_rate=1, destination_warehouse_name="Nattu Kaka")
+		stock_entry.submit()
+
+		self.assertTrue(
+			frappe.db.exists({"doctype": "Stock Entry", "name": stock_entry.name})
+		)

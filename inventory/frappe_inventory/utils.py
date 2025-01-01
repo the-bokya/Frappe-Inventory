@@ -1,5 +1,6 @@
 import frappe
 from frappe.query_builder.functions import Count, Sum, Abs
+from datetime import datetime
 
 # Method for moving average valuation
 # def get_last_stock_and_valuation(item, warehouse):
@@ -70,3 +71,32 @@ def generate_warehouse(warehouse_name):
 	warehouse.warehouse_name = warehouse_name
 	warehouse.parent_warehouse = "All Warehouses"
 	return warehouse
+
+def generate_single_transaction(transaction_type, quantity, item_name, valuation_rate=None, destination_warehouse_name=None, source_warehouse_name=None):
+	stock_entry = generate_stock_entry(transaction_type)
+	stock_entry_item = generate_stock_entry_item(quantity, item_name, stock_entry, valuation_rate, destination_warehouse_name=destination_warehouse_name)
+	stock_entry_item.submit()
+	stock_entry.transactions.append(stock_entry_item)
+	return stock_entry
+
+def generate_stock_entry(transaction_type):
+	stock_entry = frappe.get_doc({"doctype": "Stock Entry"})
+	stock_entry.transaction_type = "Receipt"
+	stock_entry.stock_datetime = datetime.now()
+	return stock_entry
+
+
+def generate_stock_entry_item(quantity, item_name, parent_stock_entry, valuation_rate=None, destination_warehouse_name=None, source_warehouse_name=None):
+	stock_entry_item = frappe.get_doc({"doctype": "Stock Entry Item"})
+	if destination_warehouse_name:
+		stock_entry_item.destination_warehouse = destination_warehouse_name
+	if source_warehouse_name:
+		stock_entry_item.source_warehouse = source_warehouse_name
+	if valuation_rate:
+		stock_entry_item.valuation_rate = valuation_rate
+	stock_entry_item.quantity = quantity
+	stock_entry_item.item = item_name
+	stock_entry_item.parent = parent_stock_entry
+	stock_entry_item.parenttype = "Stock Entry"
+	stock_entry_item.parentfield = "transactions"
+	return stock_entry_item
