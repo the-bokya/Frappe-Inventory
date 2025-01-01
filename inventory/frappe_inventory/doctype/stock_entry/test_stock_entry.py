@@ -34,8 +34,10 @@ class IntegrationTestStockEntry(IntegrationTestCase):
 class TestDriver(FrappeTestCase):
 	def setUp(self):
 		generate_item("TV", "Consumable").insert()
-	def test_stock_entry_generation(self):
 		stock_entry = generate_single_transaction("Receipt", 1, "TV", valuation_rate=1, destination_warehouse_name="Nattu Kaka")
+		stock_entry.submit()
+	def test_stock_entry_generation(self):
+		stock_entry = generate_single_transaction("Consume", 1, "TV", valuation_rate=1, source_warehouse_name="Nattu Kaka")
 		stock_entry.submit()
 
 		self.assertTrue(
