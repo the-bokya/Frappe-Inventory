@@ -1,9 +1,10 @@
 # Copyright (c) 2024, Ayush Chaudhari and Contributors
 # See license.txt
 
-# import frappe
+import frappe
 from frappe.tests import IntegrationTestCase, UnitTestCase
-
+from frappe.tests.utils import FrappeTestCase
+from inventory.frappe_inventory.utils import generate_warehouse
 
 # On IntegrationTestCase, the doctype test records and all
 # link-field test record dependencies are recursively loaded
@@ -28,3 +29,15 @@ class IntegrationTestWarehouse(IntegrationTestCase):
 	"""
 
 	pass
+
+
+class TestDriver(FrappeTestCase):
+	def test_warehouse_generation(self):
+		warehouse_name = "Jethalal"
+		warehouse = generate_warehouse(warehouse_name)
+		warehouse.insert()
+		self.assertTrue(
+			frappe.db.exists(
+				{"doctype": "Warehouse", "warehouse_name": warehouse_name}
+			)
+		)

@@ -60,7 +60,13 @@ def get_last_stock_and_valuation(item, warehouse):
 # Mostly for testing
 
 def generate_item(item_name, item_type):
-		item = frappe.get_doc({"doctype": "Item"})
-		item.name1 = item_name
-		item.type = item_type
-		return item
+	item = frappe.get_doc({"doctype": "Item"})
+	item.name1 = item_name
+	item.type = item_type
+	return item
+
+def generate_warehouse(warehouse_name):
+	warehouse = frappe.get_doc({"doctype": "Warehouse"})
+	warehouse.warehouse_name = warehouse_name
+	warehouse.parent_warehouse = "All Warehouses"
+	return warehouse
