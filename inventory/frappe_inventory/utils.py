@@ -55,7 +55,7 @@ def get_last_stock_and_valuation(item, warehouse):
 		stock, stock_balance, valuation_rate = result[0]
 	else:
 		stock, stock_balance, valuation_rate = 0, 0, 0
-	print(stock, stock_balance, valuation_rate)
+
 	return stock, stock_balance, valuation_rate
 
 
@@ -92,7 +92,7 @@ def get_stock_balance():
 				)
 		.groupby(ledger_entries_d.item, ledger_entries_d.warehouse)
 	)
-	print(latest_entries_per_group.run())
+
 	# This join is able to get only the latest key-value pairs' fields
 	query = (
 		frappe.qb.from_(ledger_entries_d)
