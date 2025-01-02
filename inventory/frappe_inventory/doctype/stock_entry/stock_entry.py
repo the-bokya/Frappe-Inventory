@@ -23,9 +23,6 @@ class StockEntry(Document):
 			ledger.parent_stock_entry = self.name
 			ledger.submit()
 
-	def submit_receipt(self):
-		ledgers = []
-
 	def update_ledger_quantity(self, ledger, stock):
 		ledger.final_quantity = stock + ledger.quantity_change
 
