@@ -9,11 +9,13 @@ from datetime import datetime
 
 class StockEntry(Document):
 	def on_submit(self):
-		ledgers = self.generate_ledgers()
 
 		# Common datetime entry for all ledgers
 		current_time = self.stock_datetime
 
+		# self.generate_ledgers yields a ledger at a time,
+		# so all the ledgers are calculated and submitted sequentially.
+		ledgers = self.generate_ledgers()
 		for ledger in ledgers:
 			ledger.transaction_datetime = current_time
 			try:
@@ -23,36 +25,7 @@ class StockEntry(Document):
 			ledger.parent_stock_entry = self.name
 			ledger.submit()
 
-	def update_ledger_quantity(self, ledger, stock):
-		ledger.final_quantity = stock + ledger.quantity_change
-
-	def update_sent_ledger(
-		self, ledger, transaction, stock, stock_balance, valuation_rate
-	):
-		ledger.warehouse = transaction.source_warehouse
-		ledger.quantity_change = -transaction.quantity
-		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
-
-		self.update_ledger_quantity(ledger, stock)
-
-		ledger.incoming_rate = 0
-		ledger.outgoing_rate = valuation_rate
-
-	def update_received_ledger(
-		self, ledger, transaction, stock, stock_balance, valuation_rate
-	):
-		ledger.warehouse = transaction.destination_warehouse
-
-		ledger.quantity_change = transaction.quantity
-		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
-
-		self.update_ledger_quantity(ledger, stock)
-
-		ledger.incoming_rate = valuation_rate
-		ledger.outgoing_rate = 0
-
 	def generate_ledgers(self):
-		ledgers = []
 		for transaction in self.transactions:
 			(
 				source_stock,
@@ -91,7 +64,7 @@ class StockEntry(Document):
 					source_stock_balance,
 					valuation_rate,
 				)
-				ledgers.append(sent_ledger)
+				yield sent_ledger
 
 			if self.transaction_type != "Consume":
 				received_ledger = frappe.get_doc({"doctype": "Stock Ledger Entry"})
@@ -103,5 +76,33 @@ class StockEntry(Document):
 					destination_stock_balance,
 					valuation_rate,
 				)
-				ledgers.append(received_ledger)
-		return ledgers
+				yield received_ledger
+
+
+	def update_ledger_quantity(self, ledger, stock):
+		ledger.final_quantity = stock + ledger.quantity_change
+
+	def update_sent_ledger(
+		self, ledger, transaction, stock, stock_balance, valuation_rate
+	):
+		ledger.warehouse = transaction.source_warehouse
+		ledger.quantity_change = -transaction.quantity
+		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
+
+		self.update_ledger_quantity(ledger, stock)
+
+		ledger.incoming_rate = 0
+		ledger.outgoing_rate = valuation_rate
+
+	def update_received_ledger(
+		self, ledger, transaction, stock, stock_balance, valuation_rate
+	):
+		ledger.warehouse = transaction.destination_warehouse
+
+		ledger.quantity_change = transaction.quantity
+		ledger.stock_balance = stock_balance + ledger.quantity_change * valuation_rate
+
+		self.update_ledger_quantity(ledger, stock)
+
+		ledger.incoming_rate = valuation_rate
+		ledger.outgoing_rate = 0
