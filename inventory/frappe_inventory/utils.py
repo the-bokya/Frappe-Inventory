@@ -76,6 +76,7 @@ def get_stock_ledger():
 			ledger_entries_d.warehouse.as_("Warehouse")
 		)
 		.orderby(ledger_entries_d.transaction_datetime, order=frappe.query_builder.Order.asc)
+		.orderby(ledger_entries_d.creation, order=frappe.query_builder.Order.asc)
 	)
 	return query.run(as_dict=True)
 
