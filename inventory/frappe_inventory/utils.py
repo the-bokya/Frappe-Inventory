@@ -110,9 +110,10 @@ def get_stock_balance():
 		)
 	)
 	return query.run(as_dict=True)
+
+
 # A bunch of helper functions to generate various DocTypes
 # Mostly for testing
-
 
 def generate_item(item_name, item_type):
 	item = frappe.get_doc({"doctype": "Item"})
