@@ -1,7 +1,12 @@
 {
  "app": "frappe",
- "charts": [],
- "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}},{\"id\":\"xZN1wgunqi\",\"type\":\"card\",\"data\":{\"card_name\":\"Entries\",\"col\":4}},{\"id\":\"JTwoge1I0V\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "charts": [
+  {
+   "chart_name": "Total Stock Balance Report",
+   "label": "Total Stock Balance"
+  }
+ ],
+ "content": "[{\"id\":\"ezl1kZIOdK\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Gada Electronics</span>\",\"col\":12}},{\"id\":\"0Ok4oQOOp0\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Total Stock Balance\",\"col\":12}},{\"id\":\"xZN1wgunqi\",\"type\":\"card\",\"data\":{\"card_name\":\"Entries\",\"col\":4}},{\"id\":\"JTwoge1I0V\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
  "creation": "2024-12-29 15:56:48.608163",
  "custom_blocks": [],
  "docstatus": 0,
@@ -76,7 +81,7 @@
    "type": "Link"
   }
  ],
- "modified": "2025-01-02 02:47:05.464903",
+ "modified": "2025-01-02 14:23:31.977249",
  "modified_by": "Administrator",
  "module": "Frappe Inventory",
  "name": "Gada Electronics",

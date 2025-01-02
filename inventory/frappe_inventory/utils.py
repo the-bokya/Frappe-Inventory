@@ -90,6 +90,7 @@ def get_stock_balance():
 		.select(ledger_entries_d.item,
 				ledger_entries_d.warehouse,
 				Max(ledger_entries_d.transaction_datetime).as_("timestamp"),
+				Max(ledger_entries_d.creation).as_("creation"),
 				)
 		.groupby(ledger_entries_d.item, ledger_entries_d.warehouse)
 	)
@@ -101,6 +102,7 @@ def get_stock_balance():
 		.on(
 			(ledger_entries_d.warehouse == latest_entries_per_group.warehouse) &
 			(ledger_entries_d.transaction_datetime == latest_entries_per_group.timestamp) &
+			(ledger_entries_d.creation == latest_entries_per_group.creation) &
 			(ledger_entries_d.item == latest_entries_per_group.item)
 		)
 		.select(
@@ -114,6 +116,37 @@ def get_stock_balance():
 	)
 	return query.run(as_dict=True)
 
+def get_total_stock_balance_per_warehouse():
+	ledger_entries_d = frappe.qb.DocType("Stock Ledger Entry")
+
+	# This one gets the latest ledger entry timestamp for each warehouse-item pair
+	latest_entries_per_group = (
+		frappe.qb.from_(ledger_entries_d)
+		.select(
+				ledger_entries_d.warehouse,
+				Max(ledger_entries_d.transaction_datetime).as_("timestamp"),
+				Max(ledger_entries_d.creation).as_("creation"),
+				)
+		.groupby(ledger_entries_d.item, ledger_entries_d.warehouse)
+	)
+
+	# This join is able to get only the latest key-value pairs' fields
+	query = (
+		frappe.qb.from_(ledger_entries_d)
+		.join(latest_entries_per_group)
+		.on(
+			(ledger_entries_d.warehouse == latest_entries_per_group.warehouse) &
+			(ledger_entries_d.transaction_datetime == latest_entries_per_group.timestamp) &
+			(ledger_entries_d.creation == latest_entries_per_group.creation)
+		)
+		.select(
+			Sum(ledger_entries_d.final_quantity).as_("Final Quantity"),
+			Sum(ledger_entries_d.stock_balance).as_("Stock Balance"),
+			ledger_entries_d.warehouse.as_("Warehouse")
+		)
+		.groupby(ledger_entries_d.warehouse)
+	)
+	return query.run(as_dict=True)
 
 # A bunch of helper functions to generate various DocTypes
 # Mostly for testing
