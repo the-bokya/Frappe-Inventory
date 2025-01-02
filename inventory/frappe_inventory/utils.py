@@ -46,9 +46,11 @@ def get_last_stock_and_valuation(item, warehouse):
 		.where(ledger_entries_d.item == item)
 		.where(ledger_entries_d.warehouse == warehouse)
 		.orderby(ledger_entries_d.transaction_datetime, order=frappe.query_builder.Order.desc)
+		.orderby(ledger_entries_d.creation, order=frappe.query_builder.Order.desc)
 		.limit(1)
 	)
 	result = query.run()
+
 	if len(result):
 		stock, stock_balance, valuation_rate = result[0]
 	else:
